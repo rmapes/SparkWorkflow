@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:noNamespaceSchemaLocation='workflow.xsd'>
+	<properties file="morningstar.workflow.properties" />
+
+	<job name="morningstarDailyLoad" trigger="jmx">
+		<config>
+			<!-- use external to load from a properties file. Default is defined by properties tag above-->
+			<external name="dailyDownloadDirectory" />
+		</config>
+		<sequential>
+			<job ref="morningstarDispatcher" />
+			<job ref="morningstarLoaderPipeline" />
+		</sequential>
+	</job>
+
+	<job name="morningstarDispatcher">
+		<inputs>
+			<input name="dailyDownloadDirectory" />
+		</inputs>
+		<command>
+			ls ${dailyDownloadDirectory}
+		</command>
+		<outputs>
+			<output name="filename">*(${stdout})</output>
+		</outputs>
+	</job>
+
+	<job name="morningstarLoaderPipeline">
+		<config>
+			<external name="dbRoot" />
+			<constant name="dbNode">*(1-4)</constant>
+			<external name="morningstarArchiveDirectory" />
+		</config>
+		<inputs>
+			<input name="filename" />
+			<input name="dailyDownloadDirectory" />
+		</inputs>
+		<sequential>
+			<job ref="convertFilenameToStagingSuffix" />
+			<job ref="morningstarLoadToStaging" />
+			<job ref="morningstarMigrateStagingToProduction" />
+			<job ref="archiveFile">
+				<inputs>
+					<input name="fromDirectory">${dailyDownloadDirectory}</input>
+					<input name="toDirectory">${morningstarArchiveDirectory}</input>
+				</inputs>
+			</job>
+		</sequential>
+	</job>
+
+	<job name="convertFilenameToStagingSuffix">
+		<inputs><input name="filename"/></inputs>
+		<outputs><output name="stagingSuffix">${stdout}</output></outputs>
+	</job>
+
+	<job name="morningstarLoadToStaging">
+		<config>
+			<external name="loaderHome"/>
+			<constant name="transforms"></constant>
+		</config>
+		<inputs>
+			<input name="dbRoot" />
+			<input name="dbNode" />
+			<input name="stagingSuffix" />
+			<input name="filename" />
+			<input name="dailyDownloadDirectory" />
+		</inputs>
+		<command>zcat ${dailyDownloadDirectory}/${filename} | ${loaderHome}/bin/datamigrator -n ${dbRoot}{dbNode} -s ${stagingSuffix} ${transforms}</command>
+	</job>
+
+	<job name="morningstarMigrateStagingToProduction">
+		<config>
+			<external name="loaderHome"/>
+			<constant name="transforms"></constant>
+		</config>
+		<inputs>
+			<input name="dbRoot" />
+			<input name="dbNode" />
+			<input name="stagingSuffix" />
+		</inputs>
+		<command>${loaderHome}/bin/dataloader -n ${dbRoot}{dbNode} -s ${stagingSuffix} ${transforms}</command>
+	</job>
+
+	<job name="archiveFile">
+		<inputs>
+			<input name="fromDirectory" />
+			<input name="toDirectory" />
+			<input name="filename" />
+		</inputs>
+		<command>mv ${fromDirectory}/${filename} ${toDirectory}/${filename}</command>
+	</job>
+</workflow>

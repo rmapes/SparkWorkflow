@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/persistence
+END
+ServiceDbAccessor.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/persistence/ServiceDbAccessor.java
+END
+ServiceDbAccessorImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/persistence/ServiceDbAccessorImpl.java
+END

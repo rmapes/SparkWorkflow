@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svnroot/sparkworkflow/!svn/ver/1/dist/bin
+END
+launchWorkflow.bat
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/sparkworkflow/!svn/ver/1/dist/bin/launchWorkflow.bat
+END
+runService.bat
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svnroot/sparkworkflow/!svn/ver/1/dist/bin/runService.bat
+END
+stopService.bat
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/sparkworkflow/!svn/ver/1/dist/bin/stopService.bat
+END

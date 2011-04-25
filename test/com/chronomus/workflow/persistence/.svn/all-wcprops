@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svnroot/sparkworkflow/!svn/ver/1/test/com/chronomus/workflow/persistence
+END
+MockServiceDbAccessor.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/sparkworkflow/!svn/ver/1/test/com/chronomus/workflow/persistence/MockServiceDbAccessor.java
+END
+PersistenceTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/sparkworkflow/!svn/ver/1/test/com/chronomus/workflow/persistence/PersistenceTest.java
+END

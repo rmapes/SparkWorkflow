@@ -1,0 +1,74 @@
+Workflow System Test/Implementation Plan 
+
+
+Support for current workflow
+	x Basic workflow : test command to generate hello world file
+	x Basic workflow with assignment: 
+		test assignment to variable
+		test command with variable in parameters - embedded
+		test command with variable in parameters - straight
+	x Sequenced jobs – single threaded
+	x Sequenced jobs – parameter passing
+(Pre refactor - WorkflowFramework.1.zip)
+(Post refactor - WorkflowFramework.2.zip)
+	Sequenced jobs – parallel
+	x	By parameter
+	x	By config
+	Sequenced jobs – assignments within job sequence 
+	x   RunCommand: output capture to return variable
+	Basic expressions
+
+	Base context assignments
+	Properties loading
+	
+	JMX trigger
+x		- basic implementation
+		- limited to jobs specified in config section
+		- better calling mechanism
+
+	Functions
+
+Persistence / Resilience
+	x Sequenced jobs - singled threaded
+	x Sequenced jobs - assignment from method call
+(WorkflowFramework.3.zip)
+
+    x assert that all contexts completed by end of test run
+    	- for all test runs
+    Add context safety to Proxy call to job queue
+    x Remove context at end of Restart trigger.
+    
+    Replace in memory with db
+
+Reporting and Alerting
+	Syntax error  reporting
+
+
+
+Advanced
+
+	Complex expressions
+	Self defined triggers
+	Task extensions
+	
+	
+TODO:
+    x Produce basic installation with hello world examples for windows
+    Produce basic installation with hello world examples for linux
+    Provide documentation
+    Refactor
+    Clean up parser and compiler to ensure code matches spec
+    Launch as open source project
+    Get others involved
+    Complete basic functionality
+    	Base config assignments (including load from properties file)
+    	Syntax error reporting
+    	Replace in memory persistence with db persistence
+    Rework jmx functionality
+Release 1.0
+
+	Further work:
+		flow control
+		complex expressions
+		improved jmx control and monitoring
+		GUI console

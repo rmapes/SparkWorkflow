@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>
+    
+    <xs:include schemaLocation=""></xs:include>
+    <xs:element name="workflow">
+    	<xs:complexType>
+    		<xs:sequence>
+    			<xs:element ref="properties" minOccurs='0' maxOccurs='unbounded' />
+    			<xs:element ref="job" minOccurs='1' maxOccurs='unbounded' />
+    		</xs:sequence>
+    	</xs:complexType>
+    </xs:element>
+    
+    <xs:element name="properties">
+    	<xs:complexType>
+    		<xs:attribute name="file" type="string" />
+    	</xs:complexType>
+    </xs:element>
+
+    <xs:element name="job">
+    	<xs:complexType>
+    		<xs:all>
+	    		<xs:element ref="config" minOccurs='0' maxOccurs='1' /> 
+	    		<xs:element ref="inputs" minOccurs='0' maxOccurs='1' /> 
+	    		<xs:element type="task" minOccurs='0' maxOccurs='unbounded' /> 
+	    		<xs:element ref="outputs" minOccurs='0' maxOccurs='1' /> 
+    		</xs:all>
+    	</xs:complexType>
+    </xs:element>
+    
+    <xs:element name="config">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice maxOccurs="unbounded">
+					<xs:element name="external" type="variable" minOccurs='0' maxOccurs='unbounded'/>
+					<xs:element name="constant" type="variable" minOccurs='0' maxOccurs='unbounded'/>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+    </xs:element>
+
+    <xs:element name="inputs">
+ 		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="input" type="variable" minOccurs='0' maxOccurs='unbounded'/>
+			</xs:sequence>
+		</xs:complexType>
+    </xs:element>
+
+    <xs:element name="outputs">
+  		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="output" type="variable" minOccurs='0' maxOccurs='unbounded'/>
+			</xs:sequence>
+		</xs:complexType>
+    </xs:element>
+
+	<xs:complexType name="task">
+		<xs:choice>
+			<xs:element name="command">
+				<xs:simpleType></xs:simpleType>
+			</xs:element>
+			<xs:element ref="job" />
+			<xs:element name="sequential">
+				<xs:complexType>
+					<xs:element type="task" maxOccurs='unbounded' />
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name="variable">
+		<xs:attribute name="name" />
+	</xs:complexType>
+</xs:schema>

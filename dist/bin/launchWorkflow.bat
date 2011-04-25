@@ -1,0 +1,1 @@
+java -cp ../lib/spark.jar com.chronomus.workflow.jmx.JmxClient workflowRunner runService %1%

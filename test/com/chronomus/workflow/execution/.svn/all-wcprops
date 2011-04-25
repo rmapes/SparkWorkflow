@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svnroot/sparkworkflow/!svn/ver/1/test/com/chronomus/workflow/execution
+END
+JobQueueTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/sparkworkflow/!svn/ver/1/test/com/chronomus/workflow/execution/JobQueueTest.java
+END
+ProxyServiceTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/sparkworkflow/!svn/ver/1/test/com/chronomus/workflow/execution/ProxyServiceTest.java
+END
+RunCommandMethodTest.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/sparkworkflow/!svn/ver/1/test/com/chronomus/workflow/execution/RunCommandMethodTest.java
+END
+MockTask.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/sparkworkflow/!svn/ver/1/test/com/chronomus/workflow/execution/MockTask.java
+END

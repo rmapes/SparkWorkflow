@@ -1,0 +1,107 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution
+END
+Service.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/Service.java
+END
+WorkflowFailureException.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/WorkflowFailureException.java
+END
+VariableStore.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/VariableStore.java
+END
+Task.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/Task.java
+END
+ProxyService.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/ProxyService.java
+END
+Trigger.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/Trigger.java
+END
+JobQueueTrigger.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/JobQueueTrigger.java
+END
+RunCommandMethod.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/RunCommandMethod.java
+END
+ServiceContext.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/ServiceContext.java
+END
+RestartTrigger.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/RestartTrigger.java
+END
+Assignment.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/Assignment.java
+END
+MethodCall.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/MethodCall.java
+END
+JobQueue.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/JobQueue.java
+END
+ExecutionException.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/ExecutionException.java
+END
+JobService.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/JobService.java
+END
+SplitMethod.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/SplitMethod.java
+END
+ParallelMethod.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/execution/ParallelMethod.java
+END

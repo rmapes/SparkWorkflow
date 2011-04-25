@@ -1,0 +1,80 @@
+10
+
+dir
+1
+https://sparkworkflow.svn.sourceforge.net/svnroot/sparkworkflow/src/com/chronomus/workflow
+https://sparkworkflow.svn.sourceforge.net/svnroot/sparkworkflow
+
+
+
+2010-11-14T23:11:08.399940Z
+1
+rmapes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d9d318be-4ff6-4a09-b9d9-484fa5b68f6b
+
+parsers
+dir
+
+execution
+dir
+
+persistence
+dir
+
+definition
+dir
+
+compiler
+dir
+
+WorkflowLauncher.java
+file
+
+
+
+
+2011-04-16T20:48:41.734884Z
+fda5ea4b51a5bcee1e525c5f82c0352b
+2010-11-14T23:11:08.399940Z
+1
+rmapes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4284
+
+jmx
+dir
+

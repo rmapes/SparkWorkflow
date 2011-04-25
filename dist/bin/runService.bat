@@ -1,0 +1,1 @@
+start /D.. java -cp lib/spark.jar com.chronomus.workflow.WorkflowLauncher

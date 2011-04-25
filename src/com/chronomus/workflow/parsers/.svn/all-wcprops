@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers
+END
+Token.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers/Token.java
+END
+TokenMgrError.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers/TokenMgrError.java
+END
+spark.jj
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers/spark.jj
+END
+ParseError.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers/ParseError.java
+END
+SparkWorkflowParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers/SparkWorkflowParser.java
+END
+ParseException.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers/ParseException.java
+END
+SparkParserTokenManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers/SparkParserTokenManager.java
+END
+SparkParserConstants.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers/SparkParserConstants.java
+END
+JavaCharStream.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers/JavaCharStream.java
+END
+SparkParser.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svnroot/sparkworkflow/!svn/ver/1/src/com/chronomus/workflow/parsers/SparkParser.java
+END
