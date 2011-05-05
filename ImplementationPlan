@@ -7,14 +7,14 @@ Support for current workflow
 		test assignment to variable
 		test command with variable in parameters - embedded
 		test command with variable in parameters - straight
-	x Sequenced jobs – single threaded
-	x Sequenced jobs – parameter passing
+	x Sequenced jobs ï¿½ single threaded
+	x Sequenced jobs ï¿½ parameter passing
 (Pre refactor - WorkflowFramework.1.zip)
 (Post refactor - WorkflowFramework.2.zip)
-	Sequenced jobs – parallel
+	Sequenced jobs ï¿½ parallel
 	x	By parameter
 	x	By config
-	Sequenced jobs – assignments within job sequence 
+	Sequenced jobs ï¿½ assignments within job sequence 
 	x   RunCommand: output capture to return variable
 	Basic expressions
 
@@ -72,3 +72,13 @@ Release 1.0
 		complex expressions
 		improved jmx control and monitoring
 		GUI console
+		
+Next steps:
+  Ensure cross platform compatible
+  Refactor to emulate context stack
+  Refactor to allow entry points
+  Add for and while loops
+  Add proper expression handling
+  Add reduce function
+  Add monitoring
+  Add multinode support
