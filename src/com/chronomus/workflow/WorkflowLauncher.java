@@ -1,11 +1,9 @@
 package com.chronomus.workflow;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +11,6 @@ import java.util.List;
 import com.chronomus.workflow.compiler.CompilerError;
 import com.chronomus.workflow.definition.Workflow;
 import com.chronomus.workflow.jmx.JmxServer;
-import com.chronomus.workflow.parsers.ParseError;
 import com.chronomus.workflow.parsers.ParseException;
 import com.chronomus.workflow.parsers.SparkWorkflowParser;
 import com.chronomus.workflow.persistence.ServiceDbAccessor;
