@@ -28,6 +28,7 @@ import com.chronomus.workflow.execution.Assignment;
 import com.chronomus.workflow.execution.Task;
 import com.chronomus.workflow.execution.MethodCall;
 import com.chronomus.workflow.execution.expressions.*;
+import com.chronomus.workflow.execution.expressions.primitives.*;
 
 /**
  * Grammar to parse Spark
@@ -143,14 +144,29 @@ TOKEN :
 | < RETURN : "return" >
 }
 
+/* DATE LITERALS */
+
+TOKEN :
+{
+  <MILLISECOND : "millisecond">
+| <SECOND : "second">
+| <MINUTE : "minute">
+| <HOUR : "hour">
+| <DAY : "day">
+| <WEEK : "week">
+| <MONTH : "month">
+| <YEAR : "year">
+| <TODAY : "today">
+| <NOW : "now">
+}
+
 /* LITERALS */
 
 TOKEN :
 {
-  < LONG_LITERAL:
-        <DECIMAL_LITERAL> (["l","L"])
-      | <HEX_LITERAL> (["l","L"])
-      | <OCTAL_LITERAL> (["l","L"])
+  < NUMBER_LITERAL:
+        <INTEGER_LITERAL> 
+      | <FLOATING_POINT_LITERAL>
   >
 |
   < INTEGER_LITERAL:
@@ -222,6 +238,30 @@ TOKEN :
           )
       )*
       "\""
+  >
+  | 
+  < DATE_LITERAL: 
+      "@"
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+        | ("\\u"
+        	["0"-"9","A"-"F","a"-"f"]
+        	["0"-"9","A"-"F","a"-"f"]
+        	["0"-"9","A"-"F","a"-"f"]
+        	["0"-"9","A"-"F","a"-"f"]
+          )
+      )*
+      "@"
+      | <NOW> | <TODAY>
+  >
+| 
+  < TIMESPAN_LITERAL:
+      <MILLISECOND> | <SECOND> | <MINUTE> | <HOUR> | <DAY> | <WEEK> | <MONTH> | <YEAR> 
   >
 }
 
@@ -1129,18 +1169,84 @@ Expression Expression(Workflow workflow):
 }
 {
 	(
+	LOOKAHEAD(ComplexExpression(workflow))	
+	expr = ComplexExpression(workflow)
+	|
+	expr = SimpleExpression(workflow)
+	)
+	{ return expr; }
+}
+
+Expression SimpleExpression(Workflow workflow):
+{
+	Expression expr = null;
+}
+{
+	(
 	<STRING_LITERAL> { expr = new StringExpression(token.image.substring(1, token.image.length()-1)); } 
 	|
+	<NUMBER_LITERAL> { expr = new PrimitiveExpression(new NumberPrimitive(token.image)); }
+	|
+    LOOKAHEAD(ParallelVariable(workflow))
 	expr = ParallelVariable(workflow)
 	|
 	expr = ListExpression(workflow)
 	|
-    LOOKAHEAD(2)
+    LOOKAHEAD(MethodCall(workflow))
 	expr = MethodCall(workflow)
 	|
 	<IDENTIFIER> { expr = new Variable(token.image); }
 	)
 	{ return expr; }
+}
+
+Expression ComplexExpression(Workflow workflow):
+{
+	Expression expr = null;
+}
+{
+	(
+    LOOKAHEAD(BinaryExpression(workflow))
+	expr = BinaryExpression(workflow)
+	|
+	expr = BracketedExpression(workflow) 
+	)
+	{return expr; }
+}
+
+Expression BracketedExpression(Workflow workflow):
+{
+	Expression expr = null;
+}
+{
+	<LPAREN>
+	(
+	expr = Expression(workflow)
+	)
+	<RPAREN>
+	{return new BracketedExpression(expr); }
+}
+
+Expression BinaryExpression(Workflow workflow):
+{
+	Expression ret;
+	Expression right;
+	Operators.Binary op;
+}
+{
+  ( 
+  ret = BracketedExpression(workflow) 
+  |
+  ret = SimpleExpression(workflow) 
+  )
+  ( 
+  	( "+" { op = Operators.Binary.plus; } | 
+  	  "-" { op = Operators.Binary.minus; } |
+  	  "*" { op = Operators.Binary.multiply; } |
+  	  "/" { op = Operators.Binary.divide; }
+  	) right = Expression(workflow) { ret = new NumericBinaryExpression(ret, right, op); }
+  )
+  { return ret; }
 }
 
 Expression ParallelVariable(Workflow workflow):

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Properties;
 
 import com.chronomus.workflow.execution.expressions.Expression;
-import com.chronomus.workflow.execution.expressions.Primitive;
+import com.chronomus.workflow.execution.expressions.primitives.Primitive;
 
 public abstract class Service {
 

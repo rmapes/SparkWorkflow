@@ -4,6 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.chronomus.workflow.execution.VariableStore;
+import com.chronomus.workflow.execution.expressions.primitives.Primitive;
+import com.chronomus.workflow.execution.expressions.primitives.StringPrimitive;
 
 public class StringExpression implements Expression {
 

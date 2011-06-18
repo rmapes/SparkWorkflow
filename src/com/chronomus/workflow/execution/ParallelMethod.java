@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Properties;
 
 import com.chronomus.workflow.execution.expressions.Expression;
-import com.chronomus.workflow.execution.expressions.ListPrimitive;
-import com.chronomus.workflow.execution.expressions.Primitive;
 import com.chronomus.workflow.execution.expressions.Variable;
+import com.chronomus.workflow.execution.expressions.primitives.ListPrimitive;
+import com.chronomus.workflow.execution.expressions.primitives.Primitive;
 import com.chronomus.workflow.persistence.ServiceDbAccessor;
 
 

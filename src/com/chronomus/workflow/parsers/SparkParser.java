@@ -9,6 +9,7 @@ import com.chronomus.workflow.execution.Assignment;
 import com.chronomus.workflow.execution.Task;
 import com.chronomus.workflow.execution.MethodCall;
 import com.chronomus.workflow.execution.expressions.*;
+import com.chronomus.workflow.execution.expressions.primitives.*;
 
 /**
  * Grammar to parse Spark
@@ -66,8 +67,8 @@ public final class SparkParser implements SparkParserConstants {
     case 0:
       jj_consume_token(0);
       break;
-    case 75:
-      jj_consume_token(75);
+    case 87:
+      jj_consume_token(87);
       break;
     default:
       jj_la1[0] = jj_gen;
@@ -143,8 +144,10 @@ public final class SparkParser implements SparkParserConstants {
                  name = token.image;
     jj_consume_token(LPAREN);
     switch (jj_nt.kind) {
+    case NUMBER_LITERAL:
     case STRING_LITERAL:
     case IDENTIFIER:
+    case LPAREN:
     case LBRACKET:
     case STAR:
       expr = Expression(workflow);
@@ -317,35 +320,143 @@ public final class SparkParser implements SparkParserConstants {
 
   final public Expression Expression(Workflow workflow) throws ParseException {
         Expression expr = null;
+    if (jj_2_3(2147483647)) {
+      expr = ComplexExpression(workflow);
+    } else {
+      switch (jj_nt.kind) {
+      case NUMBER_LITERAL:
+      case STRING_LITERAL:
+      case IDENTIFIER:
+      case LBRACKET:
+      case STAR:
+        expr = SimpleExpression(workflow);
+        break;
+      default:
+        jj_la1[13] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+          {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Expression SimpleExpression(Workflow workflow) throws ParseException {
+        Expression expr = null;
     switch (jj_nt.kind) {
     case STRING_LITERAL:
       jj_consume_token(STRING_LITERAL);
                            expr = new StringExpression(token.image.substring(1, token.image.length()-1));
       break;
-    case STAR:
-      expr = ParallelVariable(workflow);
-      break;
-    case LBRACKET:
-      expr = ListExpression(workflow);
+    case NUMBER_LITERAL:
+      jj_consume_token(NUMBER_LITERAL);
+                           expr = new PrimitiveExpression(new NumberPrimitive(token.image));
       break;
     default:
-      jj_la1[13] = jj_gen;
-      if (jj_2_3(2)) {
-        expr = MethodCall(workflow);
+      jj_la1[14] = jj_gen;
+      if (jj_2_4(2147483647)) {
+        expr = ParallelVariable(workflow);
       } else {
         switch (jj_nt.kind) {
-        case IDENTIFIER:
-          jj_consume_token(IDENTIFIER);
-                       expr = new Variable(token.image);
+        case LBRACKET:
+          expr = ListExpression(workflow);
           break;
         default:
-          jj_la1[14] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+          jj_la1[15] = jj_gen;
+          if (jj_2_5(2147483647)) {
+            expr = MethodCall(workflow);
+          } else {
+            switch (jj_nt.kind) {
+            case IDENTIFIER:
+              jj_consume_token(IDENTIFIER);
+                       expr = new Variable(token.image);
+              break;
+            default:
+              jj_la1[16] = jj_gen;
+              jj_consume_token(-1);
+              throw new ParseException();
+            }
+          }
         }
       }
     }
           {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Expression ComplexExpression(Workflow workflow) throws ParseException {
+        Expression expr = null;
+    if (jj_2_6(2147483647)) {
+      expr = BinaryExpression(workflow);
+    } else {
+      switch (jj_nt.kind) {
+      case LPAREN:
+        expr = BracketedExpression(workflow);
+        break;
+      default:
+        jj_la1[17] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+         {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Expression BracketedExpression(Workflow workflow) throws ParseException {
+        Expression expr = null;
+    jj_consume_token(LPAREN);
+    expr = Expression(workflow);
+    jj_consume_token(RPAREN);
+         {if (true) return new BracketedExpression(expr);}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Expression BinaryExpression(Workflow workflow) throws ParseException {
+        Expression ret;
+        Expression right;
+        Operators.Binary op;
+    switch (jj_nt.kind) {
+    case LPAREN:
+      ret = BracketedExpression(workflow);
+      break;
+    case NUMBER_LITERAL:
+    case STRING_LITERAL:
+    case IDENTIFIER:
+    case LBRACKET:
+    case STAR:
+      ret = SimpleExpression(workflow);
+      break;
+    default:
+      jj_la1[18] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    switch (jj_nt.kind) {
+    case PLUS:
+      jj_consume_token(PLUS);
+                op = Operators.Binary.plus;
+      break;
+    case MINUS:
+      jj_consume_token(MINUS);
+                op = Operators.Binary.minus;
+      break;
+    case STAR:
+      jj_consume_token(STAR);
+                op = Operators.Binary.multiply;
+      break;
+    case SLASH:
+      jj_consume_token(SLASH);
+                op = Operators.Binary.divide;
+      break;
+    default:
+      jj_la1[19] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    right = Expression(workflow);
+                                         ret = new NumericBinaryExpression(ret, right, op);
+    {if (true) return ret;}
     throw new Error("Missing return statement in function");
   }
 
@@ -399,8 +510,91 @@ public final class SparkParser implements SparkParserConstants {
     finally { jj_save(2, xla); }
   }
 
-  private boolean jj_3_3() {
-    if (jj_3R_8()) return true;
+  private boolean jj_2_4(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_4(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(3, xla); }
+  }
+
+  private boolean jj_2_5(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_5(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(4, xla); }
+  }
+
+  private boolean jj_2_6(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_6(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(5, xla); }
+  }
+
+  private boolean jj_3R_13() {
+    if (jj_3R_22()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_9() {
+    if (jj_scan_token(STAR)) return true;
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_8() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_12()) {
+    jj_scanpos = xsp;
+    if (jj_3R_13()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_7()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_12() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_21() {
+    if (jj_scan_token(SLASH)) return true;
+    return false;
+  }
+
+  private boolean jj_3_5() {
+    if (jj_3R_10()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_20() {
+    if (jj_scan_token(STAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_19() {
+    if (jj_scan_token(MINUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_32() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_18() {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_25() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -409,9 +603,131 @@ public final class SparkParser implements SparkParserConstants {
     return false;
   }
 
-  private boolean jj_3R_8() {
+  private boolean jj_3_4() {
+    if (jj_3R_9()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_30() {
+    if (jj_3R_33()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_31() {
+    if (jj_3R_10()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_28() {
+    if (jj_scan_token(NUMBER_LITERAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_17() {
+    if (jj_3R_26()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_15() {
+    if (jj_3R_14()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_25()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_29() {
+    if (jj_3R_9()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_27() {
+    if (jj_scan_token(STRING_LITERAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_26() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_27()) {
+    jj_scanpos = xsp;
+    if (jj_3R_28()) {
+    jj_scanpos = xsp;
+    if (jj_3R_29()) {
+    jj_scanpos = xsp;
+    if (jj_3R_30()) {
+    jj_scanpos = xsp;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) return true;
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_16() {
+    if (jj_3R_22()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_10() {
     if (jj_scan_token(IDENTIFIER)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_15()) jj_scanpos = xsp;
+    if (jj_scan_token(RPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_11() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_16()) {
+    jj_scanpos = xsp;
+    if (jj_3R_17()) return true;
+    }
+    xsp = jj_scanpos;
+    if (jj_3R_18()) {
+    jj_scanpos = xsp;
+    if (jj_3R_19()) {
+    jj_scanpos = xsp;
+    if (jj_3R_20()) {
+    jj_scanpos = xsp;
+    if (jj_3R_21()) return true;
+    }
+    }
+    }
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_34() {
+    if (jj_scan_token(INTEGER_LITERAL)) return true;
+    if (jj_scan_token(MINUS)) return true;
+    if (jj_scan_token(INTEGER_LITERAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3_3() {
+    if (jj_3R_8()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_24() {
+    if (jj_3R_26()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_22() {
+    if (jj_scan_token(LPAREN)) return true;
+    if (jj_3R_14()) return true;
+    if (jj_scan_token(RPAREN)) return true;
     return false;
   }
 
@@ -421,8 +737,30 @@ public final class SparkParser implements SparkParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_7()) return true;
+  private boolean jj_3R_33() {
+    if (jj_scan_token(LBRACKET)) return true;
+    if (jj_3R_34()) return true;
+    if (jj_scan_token(RBRACKET)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_23() {
+    if (jj_3R_8()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_14() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_23()) {
+    jj_scanpos = xsp;
+    if (jj_3R_24()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3_6() {
+    if (jj_3R_11()) return true;
     return false;
   }
 
@@ -436,7 +774,7 @@ public final class SparkParser implements SparkParserConstants {
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[15];
+  final private int[] jj_la1 = new int[20];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -446,15 +784,15 @@ public final class SparkParser implements SparkParserConstants {
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1,0x8000000,0x8000000,0x0,0xc000000,0x800,0x0,0x8000000,0x0,0x0,0x8000000,0x8000000,0x4000,0x4000000,0x8000000,};
+      jj_la1_0 = new int[] {0x1,0x0,0x0,0x0,0x2000000,0x800,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x2000000,0x2000000,0x0,0x0,0x0,0x2000000,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x20,0x1000004,0x0,0x20,0x0,0x2000,0x20,0x0,0x0,0x0,0x1000004,0x0,};
+      jj_la1_1 = new int[] {0x0,0x80,0x80,0x20000,0x4490,0x0,0x20000,0x80,0x2000000,0x20000,0x80,0x80,0x0,0x4090,0x10,0x4000,0x80,0x400,0x4490,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x800,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_2 = new int[] {0x800000,0x0,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x10,0x3c,};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[3];
+  final private JJCalls[] jj_2_rtns = new JJCalls[6];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -469,7 +807,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -484,7 +822,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -495,7 +833,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -506,7 +844,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -516,7 +854,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -526,7 +864,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -630,12 +968,12 @@ public final class SparkParser implements SparkParserConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[76];
+    boolean[] la1tokens = new boolean[88];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 20; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -650,7 +988,7 @@ public final class SparkParser implements SparkParserConstants {
         }
       }
     }
-    for (int i = 0; i < 76; i++) {
+    for (int i = 0; i < 88; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -677,7 +1015,7 @@ public final class SparkParser implements SparkParserConstants {
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 6; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -687,6 +1025,9 @@ public final class SparkParser implements SparkParserConstants {
             case 0: jj_3_1(); break;
             case 1: jj_3_2(); break;
             case 2: jj_3_3(); break;
+            case 3: jj_3_4(); break;
+            case 4: jj_3_5(); break;
+            case 5: jj_3_6(); break;
           }
         }
         p = p.next;

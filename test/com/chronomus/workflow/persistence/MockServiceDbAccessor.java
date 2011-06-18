@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.chronomus.workflow.execution.Service;
 import com.chronomus.workflow.execution.ServiceContext;
-import com.chronomus.workflow.execution.expressions.Primitive;
+import com.chronomus.workflow.execution.expressions.primitives.Primitive;
 import com.chronomus.workflow.persistence.ServiceDbAccessor;
 
 public class MockServiceDbAccessor implements ServiceDbAccessor {

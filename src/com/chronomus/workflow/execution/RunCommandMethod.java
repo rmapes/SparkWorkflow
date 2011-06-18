@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.chronomus.workflow.execution.expressions.Expression;
-import com.chronomus.workflow.execution.expressions.StringPrimitive;
 import com.chronomus.workflow.execution.expressions.Variable;
+import com.chronomus.workflow.execution.expressions.primitives.StringPrimitive;
 
 
 public class RunCommandMethod extends Service {

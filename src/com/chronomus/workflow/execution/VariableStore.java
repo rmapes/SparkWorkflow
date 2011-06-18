@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import com.chronomus.workflow.execution.expressions.Primitive;
-import com.chronomus.workflow.execution.expressions.StringPrimitive;
+import com.chronomus.workflow.execution.expressions.primitives.Primitive;
+import com.chronomus.workflow.execution.expressions.primitives.StringPrimitive;
 
 public class VariableStore extends HashMap<String, Primitive> {
 

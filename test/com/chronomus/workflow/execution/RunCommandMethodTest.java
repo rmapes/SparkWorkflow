@@ -7,8 +7,8 @@ import junit.framework.TestCase;
 
 import com.chronomus.workflow.execution.RunCommandMethod;
 import com.chronomus.workflow.execution.VariableStore;
-import com.chronomus.workflow.execution.expressions.Primitive;
-import com.chronomus.workflow.execution.expressions.StringPrimitive;
+import com.chronomus.workflow.execution.expressions.primitives.Primitive;
+import com.chronomus.workflow.execution.expressions.primitives.StringPrimitive;
 
 public class RunCommandMethodTest extends TestCase {
 	

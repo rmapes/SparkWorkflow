@@ -1,11 +1,11 @@
-package com.chronomus.workflow.execution.expressions;
+package com.chronomus.workflow.execution.expressions.primitives;
 
 
-public class StringPrimitive implements Primitive {
+public class NumberPrimitive implements Primitive {
 
 	private final String value;
 
-	public StringPrimitive(String value) {
+	public NumberPrimitive(String value) {
 		this.value = value;
 	}
 

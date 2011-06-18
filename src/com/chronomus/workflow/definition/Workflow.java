@@ -23,10 +23,10 @@ import com.chronomus.workflow.execution.Task;
 import com.chronomus.workflow.execution.Trigger;
 import com.chronomus.workflow.execution.VariableStore;
 import com.chronomus.workflow.execution.expressions.Expression;
-import com.chronomus.workflow.execution.expressions.ListPrimitive;
 import com.chronomus.workflow.execution.expressions.ParallelVariable;
-import com.chronomus.workflow.execution.expressions.Primitive;
 import com.chronomus.workflow.execution.expressions.Variable;
+import com.chronomus.workflow.execution.expressions.primitives.ListPrimitive;
+import com.chronomus.workflow.execution.expressions.primitives.Primitive;
 import com.chronomus.workflow.jmx.JmxServer;
 import com.chronomus.workflow.persistence.ServiceDbAccessor;
 

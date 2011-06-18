@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.chronomus.workflow.definition.Workflow;
 import com.chronomus.workflow.execution.expressions.Expression;
-import com.chronomus.workflow.execution.expressions.Primitive;
+import com.chronomus.workflow.execution.expressions.primitives.Primitive;
 
 public class MethodCall implements Expression, Task {
 

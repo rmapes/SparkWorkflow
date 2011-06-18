@@ -1,4 +1,4 @@
-package com.chronomus.workflow.execution.expressions;
+package com.chronomus.workflow.execution.expressions.primitives;
 
 public interface Primitive {
 
