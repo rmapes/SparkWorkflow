@@ -67,8 +67,8 @@ public final class SparkParser implements SparkParserConstants {
     case 0:
       jj_consume_token(0);
       break;
-    case 87:
-      jj_consume_token(87);
+    case 86:
+      jj_consume_token(86);
       break;
     default:
       jj_la1[0] = jj_gen;
@@ -144,6 +144,16 @@ public final class SparkParser implements SparkParserConstants {
                  name = token.image;
     jj_consume_token(LPAREN);
     switch (jj_nt.kind) {
+    case MILLISECOND:
+    case SECOND:
+    case MINUTE:
+    case HOUR:
+    case DAY:
+    case WEEK:
+    case MONTH:
+    case YEAR:
+    case TODAY:
+    case DATE_LITERAL:
     case NUMBER_LITERAL:
     case STRING_LITERAL:
     case IDENTIFIER:
@@ -320,22 +330,192 @@ public final class SparkParser implements SparkParserConstants {
 
   final public Expression Expression(Workflow workflow) throws ParseException {
         Expression expr = null;
-    if (jj_2_3(2147483647)) {
-      expr = ComplexExpression(workflow);
-    } else {
+    switch (jj_nt.kind) {
+    case TODAY:
+    case DATE_LITERAL:
+      expr = DateExpression(workflow);
+      break;
+    default:
+      jj_la1[13] = jj_gen;
+      if (jj_2_3(2147483647)) {
+        expr = TimespanExpression(workflow);
+      } else if (jj_2_4(2147483647)) {
+        expr = NumericExpression(workflow);
+      } else {
+        switch (jj_nt.kind) {
+        case NUMBER_LITERAL:
+        case STRING_LITERAL:
+        case IDENTIFIER:
+        case LBRACKET:
+        case STAR:
+          expr = SimpleExpression(workflow);
+          break;
+        default:
+          jj_la1[14] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      }
+    }
+          {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Expression DateExpression(Workflow workflow) throws ParseException {
+        Expression expr;
+        Expression right;
+        Operators.Binary op;
+    expr = SimpleDateExpression(workflow);
+    label_7:
+    while (true) {
       switch (jj_nt.kind) {
-      case NUMBER_LITERAL:
-      case STRING_LITERAL:
-      case IDENTIFIER:
-      case LBRACKET:
-      case STAR:
-        expr = SimpleExpression(workflow);
+      case PLUS:
+      case MINUS:
+        ;
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[15] = jj_gen;
+        break label_7;
+      }
+      switch (jj_nt.kind) {
+      case PLUS:
+        jj_consume_token(PLUS);
+                        op = Operators.Binary.plus;
+        break;
+      case MINUS:
+        jj_consume_token(MINUS);
+                        op = Operators.Binary.minus;
+        break;
+      default:
+        jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
+      right = TimespanExpression(workflow);
+                  expr = new DateBinaryExpression(expr, right, op);
+    }
+          {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public TimespanExpression TimespanExpression(Workflow workflow) throws ParseException {
+        TimespanPrimitive primitive;
+    primitive = TimespanPrimitive(workflow);
+          {if (true) return new TimespanExpression(primitive);}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public TimespanPrimitive TimespanPrimitive(Workflow workflow) throws ParseException {
+        TimespanPrimitive expr;
+    NumberPrimitive multiplier;
+    switch (jj_nt.kind) {
+    case MILLISECOND:
+    case SECOND:
+    case MINUTE:
+    case HOUR:
+    case DAY:
+    case WEEK:
+    case MONTH:
+    case YEAR:
+      expr = SimpleTimespanPrimitive(workflow);
+      break;
+    case NUMBER_LITERAL:
+      jj_consume_token(NUMBER_LITERAL);
+                                    multiplier = new NumberPrimitive(token.image);
+      jj_consume_token(STAR);
+                        expr = SimpleTimespanPrimitive(workflow);
+                        expr =  expr.multiplyBy(multiplier);
+      break;
+    default:
+      jj_la1[17] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+          {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public TimespanPrimitive SimpleTimespanPrimitive(Workflow workflow) throws ParseException {
+        TimespanPrimitive expr;
+    switch (jj_nt.kind) {
+    case MILLISECOND:
+      jj_consume_token(MILLISECOND);
+      break;
+    case SECOND:
+      jj_consume_token(SECOND);
+      break;
+    case MINUTE:
+      jj_consume_token(MINUTE);
+      break;
+    case HOUR:
+      jj_consume_token(HOUR);
+      break;
+    case DAY:
+      jj_consume_token(DAY);
+      break;
+    case WEEK:
+      jj_consume_token(WEEK);
+      break;
+    case MONTH:
+      jj_consume_token(MONTH);
+      break;
+    case YEAR:
+      jj_consume_token(YEAR);
+      break;
+    default:
+      jj_la1[18] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+     NumberPrimitive multiplier = new NumberPrimitive("1");
+         TimespanPrimitive.Type type = TimespanPrimitive.Type.valueOf(token.image);
+         expr = new TimespanPrimitive(multiplier, type);
+          {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Expression NumericExpression(Workflow workflow) throws ParseException {
+        Expression expr;
+    if (jj_2_5(2147483647)) {
+      expr = ComplexNumericExpression(workflow);
+    } else {
+      switch (jj_nt.kind) {
+      case NUMBER_LITERAL:
+        expr = SimpleNumericExpression(workflow);
+        break;
+      default:
+        jj_la1[19] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+          {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Expression SimpleNumericExpression(Workflow workflow) throws ParseException {
+        Expression expr = null;
+    jj_consume_token(NUMBER_LITERAL);
+                           expr = new PrimitiveExpression(new NumberPrimitive(token.image));
+          {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Expression SimpleDateExpression(Workflow workflow) throws ParseException {
+        Expression expr = null;
+    switch (jj_nt.kind) {
+    case DATE_LITERAL:
+      jj_consume_token(DATE_LITERAL);
+                         expr = new PrimitiveExpression(new DatePrimitive(token.image.substring(1, token.image.length()-1)));
+      break;
+    case TODAY:
+      jj_consume_token(TODAY);
+                  expr = new PrimitiveExpression(new DatePrimitive(new Date()));
+      break;
+    default:
+      jj_la1[20] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
           {if (true) return expr;}
     throw new Error("Missing return statement in function");
@@ -353,8 +533,8 @@ public final class SparkParser implements SparkParserConstants {
                            expr = new PrimitiveExpression(new NumberPrimitive(token.image));
       break;
     default:
-      jj_la1[14] = jj_gen;
-      if (jj_2_4(2147483647)) {
+      jj_la1[21] = jj_gen;
+      if (jj_2_6(2147483647)) {
         expr = ParallelVariable(workflow);
       } else {
         switch (jj_nt.kind) {
@@ -362,8 +542,8 @@ public final class SparkParser implements SparkParserConstants {
           expr = ListExpression(workflow);
           break;
         default:
-          jj_la1[15] = jj_gen;
-          if (jj_2_5(2147483647)) {
+          jj_la1[22] = jj_gen;
+          if (jj_2_7(2147483647)) {
             expr = MethodCall(workflow);
           } else {
             switch (jj_nt.kind) {
@@ -372,7 +552,7 @@ public final class SparkParser implements SparkParserConstants {
                        expr = new Variable(token.image);
               break;
             default:
-              jj_la1[16] = jj_gen;
+              jj_la1[23] = jj_gen;
               jj_consume_token(-1);
               throw new ParseException();
             }
@@ -384,17 +564,25 @@ public final class SparkParser implements SparkParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Expression ComplexExpression(Workflow workflow) throws ParseException {
+  final public Expression VariableExpression(Workflow workflow) throws ParseException {
         Expression expr = null;
-    if (jj_2_6(2147483647)) {
-      expr = BinaryExpression(workflow);
+    jj_consume_token(IDENTIFIER);
+                       expr = new Variable(token.image);
+          {if (true) return expr;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Expression ComplexNumericExpression(Workflow workflow) throws ParseException {
+        Expression expr = null;
+    if (jj_2_8(2147483647)) {
+      expr = NumericBinaryExpression(workflow);
     } else {
       switch (jj_nt.kind) {
       case LPAREN:
-        expr = BracketedExpression(workflow);
+        expr = BracketedNumericExpression(workflow);
         break;
       default:
-        jj_la1[17] = jj_gen;
+        jj_la1[24] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -403,32 +591,28 @@ public final class SparkParser implements SparkParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Expression BracketedExpression(Workflow workflow) throws ParseException {
+  final public Expression BracketedNumericExpression(Workflow workflow) throws ParseException {
         Expression expr = null;
     jj_consume_token(LPAREN);
-    expr = Expression(workflow);
+    expr = NumericExpression(workflow);
     jj_consume_token(RPAREN);
          {if (true) return new BracketedExpression(expr);}
     throw new Error("Missing return statement in function");
   }
 
-  final public Expression BinaryExpression(Workflow workflow) throws ParseException {
+  final public Expression NumericBinaryExpression(Workflow workflow) throws ParseException {
         Expression ret;
         Expression right;
         Operators.Binary op;
     switch (jj_nt.kind) {
     case LPAREN:
-      ret = BracketedExpression(workflow);
+      ret = BracketedNumericExpression(workflow);
       break;
     case NUMBER_LITERAL:
-    case STRING_LITERAL:
-    case IDENTIFIER:
-    case LBRACKET:
-    case STAR:
-      ret = SimpleExpression(workflow);
+      ret = SimpleNumericExpression(workflow);
       break;
     default:
-      jj_la1[18] = jj_gen;
+      jj_la1[25] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -450,12 +634,12 @@ public final class SparkParser implements SparkParserConstants {
                 op = Operators.Binary.divide;
       break;
     default:
-      jj_la1[19] = jj_gen;
+      jj_la1[26] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-    right = Expression(workflow);
-                                         ret = new NumericBinaryExpression(ret, right, op);
+    right = NumericExpression(workflow);
+                                                ret = new NumericBinaryExpression(ret, right, op);
     {if (true) return ret;}
     throw new Error("Missing return statement in function");
   }
@@ -531,236 +715,423 @@ public final class SparkParser implements SparkParserConstants {
     finally { jj_save(5, xla); }
   }
 
-  private boolean jj_3R_13() {
-    if (jj_3R_22()) return true;
-    return false;
+  private boolean jj_2_7(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_7(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(6, xla); }
   }
 
-  private boolean jj_3R_9() {
-    if (jj_scan_token(STAR)) return true;
-    if (jj_3R_14()) return true;
-    return false;
+  private boolean jj_2_8(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_8(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(7, xla); }
   }
 
-  private boolean jj_3R_8() {
+  private boolean jj_3R_41() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_12()) {
+    if (jj_3R_52()) {
     jj_scanpos = xsp;
-    if (jj_3R_13()) return true;
+    if (jj_3R_53()) return true;
     }
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_7()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_12() {
-    if (jj_3R_11()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_21() {
-    if (jj_scan_token(SLASH)) return true;
-    return false;
-  }
-
-  private boolean jj_3_5() {
-    if (jj_3R_10()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_20() {
-    if (jj_scan_token(STAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_19() {
-    if (jj_scan_token(MINUS)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_32() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_18() {
-    if (jj_scan_token(PLUS)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_25() {
-    if (jj_scan_token(COMMA)) return true;
+  private boolean jj_3_7() {
     if (jj_3R_14()) return true;
-    return false;
-  }
-
-  private boolean jj_3_2() {
-    if (jj_3R_7()) return true;
-    return false;
-  }
-
-  private boolean jj_3_4() {
-    if (jj_3R_9()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_30() {
-    if (jj_3R_33()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_31() {
-    if (jj_3R_10()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_28() {
-    if (jj_scan_token(NUMBER_LITERAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_17() {
-    if (jj_3R_26()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_15() {
-    if (jj_3R_14()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_25()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_29() {
-    if (jj_3R_9()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_27() {
-    if (jj_scan_token(STRING_LITERAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_26() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_27()) {
-    jj_scanpos = xsp;
-    if (jj_3R_28()) {
-    jj_scanpos = xsp;
-    if (jj_3R_29()) {
-    jj_scanpos = xsp;
-    if (jj_3R_30()) {
-    jj_scanpos = xsp;
-    if (jj_3R_31()) {
-    jj_scanpos = xsp;
-    if (jj_3R_32()) return true;
-    }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_16() {
-    if (jj_3R_22()) return true;
     return false;
   }
 
   private boolean jj_3R_10() {
+    if (jj_scan_token(NUMBER_LITERAL)) return true;
+    if (jj_scan_token(STAR)) return true;
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_47() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_6() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_45() {
+    if (jj_3R_54()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_55() {
+    if (jj_scan_token(INTEGER_LITERAL)) return true;
+    if (jj_scan_token(MINUS)) return true;
+    if (jj_scan_token(INTEGER_LITERAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_37() {
+    if (jj_3R_41()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_46() {
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_43() {
+    if (jj_scan_token(NUMBER_LITERAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_51() {
+    if (jj_scan_token(MINUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_50() {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_44() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_42() {
+    if (jj_scan_token(STRING_LITERAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_38() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_42()) {
+    jj_scanpos = xsp;
+    if (jj_3R_43()) {
+    jj_scanpos = xsp;
+    if (jj_3R_44()) {
+    jj_scanpos = xsp;
+    if (jj_3R_45()) {
+    jj_scanpos = xsp;
+    if (jj_3R_46()) {
+    jj_scanpos = xsp;
+    if (jj_3R_47()) return true;
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_40() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_50()) {
+    jj_scanpos = xsp;
+    if (jj_3R_51()) return true;
+    }
+    if (jj_3R_37()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_54() {
+    if (jj_scan_token(LBRACKET)) return true;
+    if (jj_3R_55()) return true;
+    if (jj_scan_token(RBRACKET)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_49() {
+    if (jj_scan_token(TODAY)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_48() {
+    if (jj_scan_token(DATE_LITERAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_13() {
+    if (jj_scan_token(STAR)) return true;
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_39() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_48()) {
+    jj_scanpos = xsp;
+    if (jj_3R_49()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_36() {
+    if (jj_3R_39()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_40()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_22() {
+    if (jj_3R_21()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_35()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3_4() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  private boolean jj_3_5() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_14() {
     if (jj_scan_token(IDENTIFIER)) return true;
     if (jj_scan_token(LPAREN)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_15()) jj_scanpos = xsp;
+    if (jj_3R_22()) jj_scanpos = xsp;
     if (jj_scan_token(RPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_28() {
+    if (jj_scan_token(SLASH)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_9() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  private boolean jj_3_3() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_9()) {
+    jj_scanpos = xsp;
+    if (jj_3R_10()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_27() {
+    if (jj_scan_token(STAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_26() {
+    if (jj_scan_token(MINUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_29() {
+    if (jj_scan_token(NUMBER_LITERAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_25() {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_34() {
+    if (jj_3R_38()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_18() {
+    if (jj_3R_29()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_33() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_17() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_8() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_scan_token(ASSIGN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_32() {
+    if (jj_3R_37()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_31() {
+    if (jj_3R_36()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_21() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) {
+    jj_scanpos = xsp;
+    if (jj_3R_33()) {
+    jj_scanpos = xsp;
+    if (jj_3R_34()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_24() {
+    if (jj_3R_29()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_23() {
+    if (jj_3R_30()) return true;
     return false;
   }
 
   private boolean jj_3R_11() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_16()) {
+    if (jj_3R_17()) {
     jj_scanpos = xsp;
-    if (jj_3R_17()) return true;
+    if (jj_3R_18()) return true;
     }
-    xsp = jj_scanpos;
-    if (jj_3R_18()) {
-    jj_scanpos = xsp;
-    if (jj_3R_19()) {
-    jj_scanpos = xsp;
-    if (jj_3R_20()) {
-    jj_scanpos = xsp;
-    if (jj_3R_21()) return true;
-    }
-    }
-    }
-    if (jj_3R_14()) return true;
     return false;
   }
 
-  private boolean jj_3R_34() {
-    if (jj_scan_token(INTEGER_LITERAL)) return true;
-    if (jj_scan_token(MINUS)) return true;
-    if (jj_scan_token(INTEGER_LITERAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3_3() {
-    if (jj_3R_8()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_24() {
-    if (jj_3R_26()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_22() {
-    if (jj_scan_token(LPAREN)) return true;
-    if (jj_3R_14()) return true;
-    if (jj_scan_token(RPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_7() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_scan_token(ASSIGN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_33() {
-    if (jj_scan_token(LBRACKET)) return true;
-    if (jj_3R_34()) return true;
-    if (jj_scan_token(RBRACKET)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_23() {
-    if (jj_3R_8()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_14() {
+  private boolean jj_3R_15() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_23()) {
     jj_scanpos = xsp;
     if (jj_3R_24()) return true;
     }
+    xsp = jj_scanpos;
+    if (jj_3R_25()) {
+    jj_scanpos = xsp;
+    if (jj_3R_26()) {
+    jj_scanpos = xsp;
+    if (jj_3R_27()) {
+    jj_scanpos = xsp;
+    if (jj_3R_28()) return true;
+    }
+    }
+    }
+    if (jj_3R_11()) return true;
     return false;
   }
 
-  private boolean jj_3_6() {
+  private boolean jj_3_1() {
+    if (jj_3R_8()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_30() {
+    if (jj_scan_token(LPAREN)) return true;
     if (jj_3R_11()) return true;
+    if (jj_scan_token(RPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3_8() {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_35() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    if (jj_3R_8()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_20() {
+    if (jj_3R_30()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_16() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(15)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(16)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(17)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(18)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(19)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(20)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(21)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(22)) return true;
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_12() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_19()) {
+    jj_scanpos = xsp;
+    if (jj_3R_20()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_19() {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_53() {
+    if (jj_scan_token(NUMBER_LITERAL)) return true;
+    if (jj_scan_token(STAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_52() {
+    if (jj_3R_16()) return true;
     return false;
   }
 
@@ -774,7 +1145,7 @@ public final class SparkParser implements SparkParserConstants {
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[20];
+  final private int[] jj_la1 = new int[27];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -784,15 +1155,15 @@ public final class SparkParser implements SparkParserConstants {
       jj_la1_init_2();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1,0x0,0x0,0x0,0x2000000,0x800,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x2000000,0x2000000,0x0,0x0,0x0,0x2000000,0x0,};
+      jj_la1_0 = new int[] {0x1,0x0,0x0,0x0,0x6ff8000,0x800,0x0,0x0,0x0,0x0,0x0,0x0,0x4000,0x2800000,0x4000000,0x0,0x0,0x47f8000,0x7f8000,0x4000000,0x2800000,0x4000000,0x0,0x0,0x0,0x4000000,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x80,0x80,0x20000,0x4490,0x0,0x20000,0x80,0x2000000,0x20000,0x80,0x80,0x0,0x4090,0x10,0x4000,0x80,0x400,0x4490,0x0,};
+      jj_la1_1 = new int[] {0x0,0x40,0x40,0x10000,0x2260,0x0,0x10000,0x40,0x1000000,0x10000,0x40,0x40,0x0,0x0,0x2060,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x2000,0x40,0x200,0x200,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x800000,0x0,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x10,0x3c,};
+      jj_la1_2 = new int[] {0x400000,0x0,0x0,0x0,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8,0x6,0x6,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1e,};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[6];
+  final private JJCalls[] jj_2_rtns = new JJCalls[8];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -807,7 +1178,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -822,7 +1193,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -833,7 +1204,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -844,7 +1215,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -854,7 +1225,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -864,7 +1235,7 @@ public final class SparkParser implements SparkParserConstants {
     token = new Token();
     token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
-    for (int i = 0; i < 20; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 27; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -968,12 +1339,12 @@ public final class SparkParser implements SparkParserConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[88];
+    boolean[] la1tokens = new boolean[87];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 27; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -988,7 +1359,7 @@ public final class SparkParser implements SparkParserConstants {
         }
       }
     }
-    for (int i = 0; i < 88; i++) {
+    for (int i = 0; i < 87; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -1015,7 +1386,7 @@ public final class SparkParser implements SparkParserConstants {
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 8; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -1028,6 +1399,8 @@ public final class SparkParser implements SparkParserConstants {
             case 3: jj_3_4(); break;
             case 4: jj_3_5(); break;
             case 5: jj_3_6(); break;
+            case 6: jj_3_7(); break;
+            case 7: jj_3_8(); break;
           }
         }
         p = p.next;

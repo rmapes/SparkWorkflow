@@ -1,6 +1,9 @@
 package com.chronomus.workflow.parsers;
 
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import junit.framework.TestCase;
 
@@ -11,10 +14,13 @@ import com.chronomus.workflow.execution.JobService;
 import com.chronomus.workflow.execution.Service;
 import com.chronomus.workflow.execution.Task;
 import com.chronomus.workflow.execution.VariableStore;
+import com.chronomus.workflow.execution.expressions.DateBinaryExpression;
 import com.chronomus.workflow.execution.expressions.Expression;
+import com.chronomus.workflow.execution.expressions.primitives.DatePrimitive;
 import com.chronomus.workflow.execution.expressions.primitives.NumberPrimitive;
 import com.chronomus.workflow.execution.expressions.primitives.Primitive;
 import com.chronomus.workflow.execution.expressions.primitives.StringPrimitive;
+import com.chronomus.workflow.execution.expressions.primitives.TimespanPrimitive;
 import com.chronomus.workflow.jmx.JmxServer;
 import com.chronomus.workflow.persistence.MockServiceDbAccessor;
 
@@ -98,6 +104,103 @@ public class ExpressionsParserTest extends TestCase {
 		assertEquals(testValue, result.evaluate());
 	}
 	
+	/**
+	 * Test date assignment
+	 * @throws Exception
+	 */
+	public void testDateVariableAssignment() throws Exception {
+		// Parse from code
+		String testValue = "12 Jun 1993";
+		String basicWorkflow = 
+			"workflow { " +
+				"def job helloWorld() { " +
+					"var = @" + testValue + "@;" + 
+				"}" +
+			"}";
+		Workflow workflow = new SparkWorkflowParser(mockDbAccessor).loadWorkflow(new StringReader(basicWorkflow));
+
+		Expression expr = getExpression(workflow);
+		
+		// Test run
+		VariableStore context = new VariableStore();
+		Primitive result = expr.evaluate(context);
+		assertTrue(result instanceof DatePrimitive);
+		assertEquals(testValue, result.evaluate());
+	}
+	
+	/**
+	 * Test date assignment from today literal
+	 * @throws Exception
+	 */
+	public void testTodaysDateVariableAssignment() throws Exception {
+		// Parse from code
+		DateFormat df = new SimpleDateFormat("dd MMM yyyy");
+		String testValue = df.format(new Date());
+		String basicWorkflow = 
+			"workflow { " +
+				"def job helloWorld() { " +
+					"var = today;" + 
+				"}" +
+			"}";
+		Workflow workflow = new SparkWorkflowParser(mockDbAccessor).loadWorkflow(new StringReader(basicWorkflow));
+
+		Expression expr = getExpression(workflow);
+		
+		// Test run
+		VariableStore context = new VariableStore();
+		Primitive result = expr.evaluate(context);
+		assertTrue(result instanceof DatePrimitive);
+		assertEquals(testValue, result.evaluate());
+	}
+	
+	/**
+	 * Test date assignment
+	 * @throws Exception
+	 */
+	public void testTimespanAssignment() throws Exception {
+		// Parse from code
+		String testValue = "1 day";
+		String basicWorkflow = 
+			"workflow { " +
+				"def job helloWorld() { " +
+					"var = day;" + 
+				"}" +
+			"}";
+		Workflow workflow = new SparkWorkflowParser(mockDbAccessor).loadWorkflow(new StringReader(basicWorkflow));
+
+		Expression expr = getExpression(workflow);
+		
+		// Test run
+		VariableStore context = new VariableStore();
+		Primitive result = expr.evaluate(context);
+		assertTrue(result instanceof TimespanPrimitive);
+		assertEquals(testValue, result.toString());
+	}
+
+	/**
+	 * Test date assignment
+	 * @throws Exception
+	 */
+	public void testTimespanWithMultiplierAssignment() throws Exception {
+		// Parse from code
+		String testValue = "1 day";
+		String basicWorkflow = 
+			"workflow { \n" +
+				"def job helloWorld() { \n" +
+					"var = 1 * day;\n" + 
+				"}\n" +
+			"}\n";
+		Workflow workflow = new SparkWorkflowParser(mockDbAccessor).loadWorkflow(new StringReader(basicWorkflow));
+
+		Expression expr = getExpression(workflow);
+		
+		// Test run
+		VariableStore context = new VariableStore();
+		Primitive result = expr.evaluate(context);
+		assertTrue(result instanceof TimespanPrimitive);
+		assertEquals(testValue, result.toString());
+	}
+
 /////////////////////////////////////
 // Variable assignments
 
@@ -251,6 +354,34 @@ public class ExpressionsParserTest extends TestCase {
 		Primitive result = expr.evaluate(context);
 		assertTrue(result instanceof NumberPrimitive);
 		assertEquals("5", result.evaluate());
+	}
+
+////////////////////////////////////
+/// Date expressions
+	
+	/*
+	 * Test date manipulation by subtracting 1 day
+	 * @throws Exception
+	 */
+	public void testSimpleDateExpression() throws Exception {
+		// Parse from code
+		String testValue = "12 Jun 1993";
+		String expectedValue = "11 Jun 1993";
+		String basicWorkflow = 
+			"workflow { " +
+				"def job helloWorld() { " +
+					"var = @" + testValue + "@ - 1 * day;" + 
+				"}" +
+			"}";
+		Workflow workflow = new SparkWorkflowParser(mockDbAccessor).loadWorkflow(new StringReader(basicWorkflow));
+
+		Expression expr = getExpression(workflow);
+		
+		// Test run
+		VariableStore context = new VariableStore();
+		Primitive result = expr.evaluate(context);
+		assertEquals(DatePrimitive.class, result.getClass());
+		assertEquals(expectedValue, result.evaluate());
 	}
 	
 ////////////////////////////////////

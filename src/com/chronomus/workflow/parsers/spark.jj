@@ -164,6 +164,25 @@ TOKEN :
 
 TOKEN :
 {
+  < DATE_LITERAL: 
+      "@"
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+        | ("\\u"
+        	["0"-"9","A"-"F","a"-"f"]
+        	["0"-"9","A"-"F","a"-"f"]
+        	["0"-"9","A"-"F","a"-"f"]
+        	["0"-"9","A"-"F","a"-"f"]
+          )
+      )*
+      "@"
+  >
+|
   < NUMBER_LITERAL:
         <INTEGER_LITERAL> 
       | <FLOATING_POINT_LITERAL>
@@ -238,30 +257,6 @@ TOKEN :
           )
       )*
       "\""
-  >
-  | 
-  < DATE_LITERAL: 
-      "@"
-      (   (~["\"","\\","\n","\r"])
-        | ("\\"
-            ( ["n","t","b","r","f","\\","'","\""]
-            | ["0"-"7"] ( ["0"-"7"] )?
-            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
-            )
-          )
-        | ("\\u"
-        	["0"-"9","A"-"F","a"-"f"]
-        	["0"-"9","A"-"F","a"-"f"]
-        	["0"-"9","A"-"F","a"-"f"]
-        	["0"-"9","A"-"F","a"-"f"]
-          )
-      )*
-      "@"
-      | <NOW> | <TODAY>
-  >
-| 
-  < TIMESPAN_LITERAL:
-      <MILLISECOND> | <SECOND> | <MINUTE> | <HOUR> | <DAY> | <WEEK> | <MONTH> | <YEAR> 
   >
 }
 
@@ -1169,10 +1164,126 @@ Expression Expression(Workflow workflow):
 }
 {
 	(
-	LOOKAHEAD(ComplexExpression(workflow))	
-	expr = ComplexExpression(workflow)
+	expr = DateExpression(workflow)
+	|
+	LOOKAHEAD(SimpleTimespanPrimitive(workflow) | <NUMBER_LITERAL> <STAR> SimpleTimespanPrimitive(workflow))
+	expr = TimespanExpression(workflow)
+	|
+	LOOKAHEAD(NumericExpression(workflow))	
+	expr = NumericExpression(workflow)
 	|
 	expr = SimpleExpression(workflow)
+	)
+	{ return expr; }
+}
+
+Expression DateExpression(Workflow workflow): 
+{
+	Expression expr;
+	Expression right;
+	Operators.Binary op;
+}
+{
+	(
+	 expr = SimpleDateExpression(workflow)
+	)
+	(
+	  ( 
+	  	( "+" { op = Operators.Binary.plus; } | 
+	  	  "-" { op = Operators.Binary.minus; } 
+	  	) right = TimespanExpression(workflow) 
+	  	{ expr = new DateBinaryExpression(expr, right, op); }
+	  )*
+	) 
+	{ return expr; }
+}
+
+
+
+TimespanExpression TimespanExpression(Workflow workflow):
+{
+	TimespanPrimitive primitive;
+}
+{
+	( primitive = TimespanPrimitive(workflow) ) 
+	{ return new TimespanExpression(primitive); }
+}
+
+TimespanPrimitive TimespanPrimitive(Workflow workflow):
+{
+	TimespanPrimitive expr;
+    NumberPrimitive multiplier;
+}
+{ 
+	(
+		expr = SimpleTimespanPrimitive(workflow) 
+	|
+		( <NUMBER_LITERAL> {multiplier = new NumberPrimitive(token.image);} <STAR>  
+		{
+			expr = SimpleTimespanPrimitive(workflow);
+			expr =  expr.multiplyBy(multiplier);
+		}
+		)
+	)
+	{ return expr; }
+}
+
+TimespanPrimitive SimpleTimespanPrimitive(Workflow workflow):
+{
+	TimespanPrimitive expr;
+}
+{ 
+	( <MILLISECOND>
+	| <SECOND>
+	| <MINUTE>
+	| <HOUR>
+	| <DAY>
+	| <WEEK>
+	| <MONTH>
+	| <YEAR>
+	)
+	{
+     NumberPrimitive multiplier = new NumberPrimitive("1");
+	 TimespanPrimitive.Type type = TimespanPrimitive.Type.valueOf(token.image); 
+	 expr = new TimespanPrimitive(multiplier, type); 
+	}
+	{ return expr; }
+}
+
+Expression NumericExpression(Workflow workflow):
+{
+	Expression expr;
+}
+{
+	(
+		LOOKAHEAD(ComplexNumericExpression(workflow))	
+		expr = ComplexNumericExpression(workflow)
+		|
+		expr = SimpleNumericExpression(workflow)
+	)
+	{ return expr; }
+}
+
+Expression SimpleNumericExpression(Workflow workflow):
+{
+	Expression expr = null;
+}
+{
+	(
+	<NUMBER_LITERAL> { expr = new PrimitiveExpression(new NumberPrimitive(token.image)); }
+	)
+	{ return expr; }
+}
+
+Expression SimpleDateExpression(Workflow workflow):
+{
+	Expression expr = null;
+}
+{
+	(
+	<DATE_LITERAL> { expr = new PrimitiveExpression(new DatePrimitive(token.image.substring(1, token.image.length()-1))); }
+	|
+	<TODAY> { expr = new PrimitiveExpression(new DatePrimitive(new Date())); }
 	)
 	{ return expr; }
 }
@@ -1200,34 +1311,45 @@ Expression SimpleExpression(Workflow workflow):
 	{ return expr; }
 }
 
-Expression ComplexExpression(Workflow workflow):
+Expression VariableExpression(Workflow workflow):
 {
 	Expression expr = null;
 }
 {
 	(
-    LOOKAHEAD(BinaryExpression(workflow))
-	expr = BinaryExpression(workflow)
+	<IDENTIFIER> { expr = new Variable(token.image); }
+	)
+	{ return expr; }
+}
+
+Expression ComplexNumericExpression(Workflow workflow):
+{
+	Expression expr = null;
+}
+{
+	(
+    LOOKAHEAD(NumericBinaryExpression(workflow))
+	expr = NumericBinaryExpression(workflow)
 	|
-	expr = BracketedExpression(workflow) 
+	expr = BracketedNumericExpression(workflow) 
 	)
 	{return expr; }
 }
 
-Expression BracketedExpression(Workflow workflow):
+Expression BracketedNumericExpression(Workflow workflow):
 {
 	Expression expr = null;
 }
 {
 	<LPAREN>
 	(
-	expr = Expression(workflow)
+	expr = NumericExpression(workflow)
 	)
 	<RPAREN>
 	{return new BracketedExpression(expr); }
 }
 
-Expression BinaryExpression(Workflow workflow):
+Expression NumericBinaryExpression(Workflow workflow):
 {
 	Expression ret;
 	Expression right;
@@ -1235,16 +1357,16 @@ Expression BinaryExpression(Workflow workflow):
 }
 {
   ( 
-  ret = BracketedExpression(workflow) 
+  ret = BracketedNumericExpression(workflow) 
   |
-  ret = SimpleExpression(workflow) 
+  ret = SimpleNumericExpression(workflow) 
   )
   ( 
   	( "+" { op = Operators.Binary.plus; } | 
   	  "-" { op = Operators.Binary.minus; } |
   	  "*" { op = Operators.Binary.multiply; } |
   	  "/" { op = Operators.Binary.divide; }
-  	) right = Expression(workflow) { ret = new NumericBinaryExpression(ret, right, op); }
+  	) right = NumericExpression(workflow) { ret = new NumericBinaryExpression(ret, right, op); }
   )
   { return ret; }
 }

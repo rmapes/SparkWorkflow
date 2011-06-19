@@ -45,129 +45,127 @@ public interface SparkParserConstants {
   /** RegularExpression Id. */
   int NOW = 24;
   /** RegularExpression Id. */
-  int NUMBER_LITERAL = 25;
+  int DATE_LITERAL = 25;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 26;
+  int NUMBER_LITERAL = 26;
   /** RegularExpression Id. */
-  int DECIMAL_LITERAL = 27;
+  int INTEGER_LITERAL = 27;
   /** RegularExpression Id. */
-  int HEX_LITERAL = 28;
+  int DECIMAL_LITERAL = 28;
   /** RegularExpression Id. */
-  int OCTAL_LITERAL = 29;
+  int HEX_LITERAL = 29;
   /** RegularExpression Id. */
-  int FLOATING_POINT_LITERAL = 30;
+  int OCTAL_LITERAL = 30;
   /** RegularExpression Id. */
-  int DECIMAL_FLOATING_POINT_LITERAL = 31;
+  int FLOATING_POINT_LITERAL = 31;
   /** RegularExpression Id. */
-  int DECIMAL_EXPONENT = 32;
+  int DECIMAL_FLOATING_POINT_LITERAL = 32;
   /** RegularExpression Id. */
-  int HEXADECIMAL_FLOATING_POINT_LITERAL = 33;
+  int DECIMAL_EXPONENT = 33;
   /** RegularExpression Id. */
-  int HEXADECIMAL_EXPONENT = 34;
+  int HEXADECIMAL_FLOATING_POINT_LITERAL = 34;
   /** RegularExpression Id. */
-  int CHARACTER_LITERAL = 35;
+  int HEXADECIMAL_EXPONENT = 35;
   /** RegularExpression Id. */
-  int STRING_LITERAL = 36;
+  int CHARACTER_LITERAL = 36;
   /** RegularExpression Id. */
-  int DATE_LITERAL = 37;
+  int STRING_LITERAL = 37;
   /** RegularExpression Id. */
-  int TIMESPAN_LITERAL = 38;
+  int IDENTIFIER = 38;
   /** RegularExpression Id. */
-  int IDENTIFIER = 39;
+  int LETTER = 39;
   /** RegularExpression Id. */
-  int LETTER = 40;
+  int PART_LETTER = 40;
   /** RegularExpression Id. */
-  int PART_LETTER = 41;
+  int LPAREN = 41;
   /** RegularExpression Id. */
-  int LPAREN = 42;
+  int RPAREN = 42;
   /** RegularExpression Id. */
-  int RPAREN = 43;
+  int LBRACE = 43;
   /** RegularExpression Id. */
-  int LBRACE = 44;
+  int RBRACE = 44;
   /** RegularExpression Id. */
-  int RBRACE = 45;
+  int LBRACKET = 45;
   /** RegularExpression Id. */
-  int LBRACKET = 46;
+  int RBRACKET = 46;
   /** RegularExpression Id. */
-  int RBRACKET = 47;
+  int SEMICOLON = 47;
   /** RegularExpression Id. */
-  int SEMICOLON = 48;
+  int COMMA = 48;
   /** RegularExpression Id. */
-  int COMMA = 49;
+  int DOT = 49;
   /** RegularExpression Id. */
-  int DOT = 50;
+  int AT = 50;
   /** RegularExpression Id. */
-  int AT = 51;
+  int ASSIGN = 51;
   /** RegularExpression Id. */
-  int ASSIGN = 52;
+  int LT = 52;
   /** RegularExpression Id. */
-  int LT = 53;
+  int BANG = 53;
   /** RegularExpression Id. */
-  int BANG = 54;
+  int TILDE = 54;
   /** RegularExpression Id. */
-  int TILDE = 55;
+  int HOOK = 55;
   /** RegularExpression Id. */
-  int HOOK = 56;
+  int COLON = 56;
   /** RegularExpression Id. */
-  int COLON = 57;
+  int EQ = 57;
   /** RegularExpression Id. */
-  int EQ = 58;
+  int LE = 58;
   /** RegularExpression Id. */
-  int LE = 59;
+  int GE = 59;
   /** RegularExpression Id. */
-  int GE = 60;
+  int NE = 60;
   /** RegularExpression Id. */
-  int NE = 61;
+  int SC_OR = 61;
   /** RegularExpression Id. */
-  int SC_OR = 62;
+  int SC_AND = 62;
   /** RegularExpression Id. */
-  int SC_AND = 63;
+  int INCR = 63;
   /** RegularExpression Id. */
-  int INCR = 64;
+  int DECR = 64;
   /** RegularExpression Id. */
-  int DECR = 65;
+  int PLUS = 65;
   /** RegularExpression Id. */
-  int PLUS = 66;
+  int MINUS = 66;
   /** RegularExpression Id. */
-  int MINUS = 67;
+  int STAR = 67;
   /** RegularExpression Id. */
-  int STAR = 68;
+  int SLASH = 68;
   /** RegularExpression Id. */
-  int SLASH = 69;
+  int BIT_AND = 69;
   /** RegularExpression Id. */
-  int BIT_AND = 70;
+  int BIT_OR = 70;
   /** RegularExpression Id. */
-  int BIT_OR = 71;
+  int XOR = 71;
   /** RegularExpression Id. */
-  int XOR = 72;
+  int REM = 72;
   /** RegularExpression Id. */
-  int REM = 73;
+  int LSHIFT = 73;
   /** RegularExpression Id. */
-  int LSHIFT = 74;
+  int PLUSASSIGN = 74;
   /** RegularExpression Id. */
-  int PLUSASSIGN = 75;
+  int MINUSASSIGN = 75;
   /** RegularExpression Id. */
-  int MINUSASSIGN = 76;
+  int STARASSIGN = 76;
   /** RegularExpression Id. */
-  int STARASSIGN = 77;
+  int SLASHASSIGN = 77;
   /** RegularExpression Id. */
-  int SLASHASSIGN = 78;
+  int ANDASSIGN = 78;
   /** RegularExpression Id. */
-  int ANDASSIGN = 79;
+  int ORASSIGN = 79;
   /** RegularExpression Id. */
-  int ORASSIGN = 80;
+  int XORASSIGN = 80;
   /** RegularExpression Id. */
-  int XORASSIGN = 81;
+  int REMASSIGN = 81;
   /** RegularExpression Id. */
-  int REMASSIGN = 82;
+  int LSHIFTASSIGN = 82;
   /** RegularExpression Id. */
-  int LSHIFTASSIGN = 83;
+  int RSIGNEDSHIFTASSIGN = 83;
   /** RegularExpression Id. */
-  int RSIGNEDSHIFTASSIGN = 84;
+  int RUNSIGNEDSHIFTASSIGN = 84;
   /** RegularExpression Id. */
-  int RUNSIGNEDSHIFTASSIGN = 85;
-  /** RegularExpression Id. */
-  int ELLIPSIS = 86;
+  int ELLIPSIS = 85;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -201,6 +199,7 @@ public interface SparkParserConstants {
     "\"year\"",
     "\"today\"",
     "\"now\"",
+    "<DATE_LITERAL>",
     "<NUMBER_LITERAL>",
     "<INTEGER_LITERAL>",
     "<DECIMAL_LITERAL>",
@@ -213,8 +212,6 @@ public interface SparkParserConstants {
     "<HEXADECIMAL_EXPONENT>",
     "<CHARACTER_LITERAL>",
     "<STRING_LITERAL>",
-    "<DATE_LITERAL>",
-    "<TIMESPAN_LITERAL>",
     "<IDENTIFIER>",
     "<LETTER>",
     "<PART_LETTER>",
