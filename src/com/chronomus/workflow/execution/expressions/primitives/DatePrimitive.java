@@ -11,7 +11,7 @@ import com.chronomus.workflow.execution.expressions.Operators.Binary;
 
 public class DatePrimitive implements Primitive {
 	
-	DateFormat df = new SimpleDateFormat("dd MMM yyyy");
+	DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
 	private final String dateString;
 

@@ -14,7 +14,6 @@ import com.chronomus.workflow.execution.JobService;
 import com.chronomus.workflow.execution.Service;
 import com.chronomus.workflow.execution.Task;
 import com.chronomus.workflow.execution.VariableStore;
-import com.chronomus.workflow.execution.expressions.DateBinaryExpression;
 import com.chronomus.workflow.execution.expressions.Expression;
 import com.chronomus.workflow.execution.expressions.primitives.DatePrimitive;
 import com.chronomus.workflow.execution.expressions.primitives.NumberPrimitive;
@@ -134,7 +133,7 @@ public class ExpressionsParserTest extends TestCase {
 	 */
 	public void testTodaysDateVariableAssignment() throws Exception {
 		// Parse from code
-		DateFormat df = new SimpleDateFormat("dd MMM yyyy");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		String testValue = df.format(new Date());
 		String basicWorkflow = 
 			"workflow { " +
@@ -365,8 +364,8 @@ public class ExpressionsParserTest extends TestCase {
 	 */
 	public void testSimpleDateExpression() throws Exception {
 		// Parse from code
-		String testValue = "12 Jun 1993";
-		String expectedValue = "11 Jun 1993";
+		String testValue = "1993-06-12";
+		String expectedValue = "1993-06-11";
 		String basicWorkflow = 
 			"workflow { " +
 				"def job helloWorld() { " +
